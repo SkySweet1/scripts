@@ -20,7 +20,7 @@ public:
         std::cout << "object created" << '\n';
     }
 
-    Class(Class&& other) noexcept{
+    Class(Class&& other) noexcept{                  // это как раз конктруктор перемещения 
         data = other.data;
         other.data = nullptr;
         std::cout << "object moved" << '\n';
