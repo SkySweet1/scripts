@@ -15,7 +15,7 @@
 void readFile(const std::string & path){
     std::ifstream inputFile;
     // создать обьект inputFile - поток
-    inputFile.exceptions(std::ios::badbit);
+    inputFile.exceptions(std::ios::badbit | std::ios::failbit);
     // эта настройка при ошибке не просто поставит флажок а сразу бросит исключение
     inputFile.open(path);
     // подключить к потоку сам файл
@@ -23,8 +23,6 @@ void readFile(const std::string & path){
         throw std::ios_base::failure("not exist");
     }
     // проверить есть ли вообще такой файл (или права илии еще чтото)
-
-
 }
 
 int main(void){
