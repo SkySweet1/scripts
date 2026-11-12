@@ -23,7 +23,8 @@ private:
     std::unique_ptr<int> data;
 
 public:
-    DatabaseConnection(){
+    DatabaseConnection()
+    {
         data = std::make_unique<int>(42);
 
         std::cout << "memmory allocated" << '\n';
@@ -31,13 +32,14 @@ public:
         throw std::runtime_error("fail in DatabaseConnection");
     }
 
-    DatabaseConnection(DatabaseConnection&& other) noexcept {
-        data = std::move(other.data);                          // почемуто помечает как ошибку ("=")
+    DatabaseConnection(DatabaseConnection &&other) noexcept
+    {
+        data = std::move(other.data); // почемуто помечает как ошибку ("=")
 
         /*
         data = other.data
 
-        компилятор будет рукаться потому что std::unique_ptr 
+        компилятор будет рукаться потому что std::unique_ptr
         это эксклюзивный владелец. его нелзя просто скопировать через "="
         потому что тогде у двух обьектов был бы один и тот же указатель и они бы попытались его удалить (двойное удаление справоцирует краш)
 
@@ -51,26 +53,28 @@ public:
         std::cout << "obj moved" << '\n';
     }
 
-    ~DatabaseConnection(){
+    ~DatabaseConnection()
+    {
         std::cout << "dc destr" << '\n';
     }
 };
 
-int main(void){
+int main(void)
+{
     try
     {
         DatabaseConnection obj;
     }
-    catch(const std::exception& ex)
+    catch (const std::exception &ex)
     {
         std::cerr << "fail in main" << '\n';
     }
-    
+
     /*
     memmory allocated
     fail in main
 
-    дектруктор не выведеться так как исключение выбросилось во время действия 
+    дектруктор не выведеться так как исключение выбросилось во время действия
     конструктора значит обьект не собрался до конца - и поэтому не сработал деструктор
     */
 

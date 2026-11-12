@@ -13,28 +13,31 @@
 #include <iostream>
 #include <stdexcept>
 
-void functionInner(){
+void functionInner()
+{
     throw std::out_of_range("diapazon fail");
 }
 
-void functionOuter(){
+void functionOuter()
+{
     try
     {
         functionInner();
     }
-    catch(const std::exception & ex)
+    catch (const std::exception &ex)
     {
         std::cerr << "logging in Outer" << '\n';
         throw;
     }
 }
 
-int main(void){
+int main(void)
+{
     try
     {
         functionOuter();
     }
-    catch(const std::out_of_range & ex)
+    catch (const std::out_of_range &ex)
     {
         std::cerr << "fail in main: " << ex.what() << '\n';
     }

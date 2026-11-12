@@ -1,28 +1,31 @@
 #include <iostream>
 #include <stdexcept>
 
-double safeDivide(int a, int b){
-    if(b == 0){
+double safeDivide(int a, int b)
+{
+    if (b == 0)
+    {
         throw std::domain_error("делитель равен нулю");
     }
 
-    return static_cast<double>(a)/b;
+    return static_cast<double>(a) / b;
 }
 
-int main(void){
+int main(void)
+{
     int a = 10;
     int b = 0;
 
-    try 
+    try
     {
-        double result = safeDivide(a,b);
+        double result = safeDivide(a, b);
         std::cout << "result: " << result << std::endl;
-    } 
-    catch(const std::domain_error & ex) 
+    }
+    catch (const std::domain_error &ex)
     {
         std::cout << "exeption: " << ex.what() << std::endl;
-    } 
-    catch(...)
+    }
+    catch (...)
     {
         std::cout << "unnown incorrect" << std::endl;
     }

@@ -15,28 +15,30 @@
 #include <iostream>
 #include <stdexcept>
 
-void lowLevelfunction() {
+void lowLevelfunction()
+{
     throw std::runtime_error("dataBase error");
 }
 
-void highLevelFunctio(){
+void highLevelFunctio()
+{
     try
     {
         lowLevelfunction();
     }
-    catch(const std::exception & ex)
+    catch (const std::exception &ex)
     {
         std::throw_with_nested(std::runtime_error("application error"));
     }
-    
 }
 
-int main(void){
+int main(void)
+{
     try
     {
         highLevelFunctio();
     }
-    catch(const std::exception& e)
+    catch (const std::exception &e)
     {
         std::cerr << "fail in higt main: " << e.what() << '\n';
 
@@ -44,18 +46,18 @@ int main(void){
         {
             std::rethrow_if_nested(e);
         }
-        catch(const std::exception& nested_e)
+        catch (const std::exception &nested_e)
         {
             std::cerr << "fail in low main: " << nested_e.what() << '\n';
         }
     }
 
     /*
-    Вложенные исключения нужны для сохранения контекста ошибки при прохождении через разные слои приложения. 
-    Функция std::throw_with_nested упаковывает новое исключение вместе с исходным, а std::rethrow_if_nested 
-    озволяет извлечь исходную причину. Это помогает не терять информацию о первоначальном сбое при перехвате 
+    Вложенные исключения нужны для сохранения контекста ошибки при прохождении через разные слои приложения.
+    Функция std::throw_with_nested упаковывает новое исключение вместе с исходным, а std::rethrow_if_nested
+    озволяет извлечь исходную причину. Это помогает не терять информацию о первоначальном сбое при перехвате
     на более высоких уровнях
     */
-    
+
     return 0;
 }

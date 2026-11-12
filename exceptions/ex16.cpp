@@ -19,7 +19,7 @@
 class BaseExeption : public std::runtime_error
 {
 public:
-    BaseExeption(const std::string & message) : std::runtime_error(message) {}
+    BaseExeption(const std::string &message) : std::runtime_error(message) {}
 
     ~BaseExeption() {}
 };
@@ -30,27 +30,29 @@ private:
     int code;
 
 public:
-    DerivedException(const std::string & message, int error) : BaseExeption(message), code(error) {}
+    DerivedException(const std::string &message, int error) : BaseExeption(message), code(error) {}
 
     /*
     я назнал что можно писать вот так: BaseExeption(message) - круто
     */
 
-    int getErrorCode() const {
+    int getErrorCode() const
+    {
         return code;
     }
 
     ~DerivedException() {}
 };
 
-int main(void){
+int main(void)
+{
     try
     {
         throw DerivedException("error", 404);
     }
-    catch(BaseExeption ex)
+    catch (BaseExeption ex)
     {
-        std::cerr << "fail in main: " << ex.what()  << '\n'; 
+        std::cerr << "fail in main: " << ex.what() << '\n';
 
         throw;
 
@@ -59,16 +61,15 @@ int main(void){
         значит следующий const DerivedException & ex ей не подойдет и исключение пойдет дальше а дальше ничего нет и программа завершиться
 
         тут throw без аргумента и поэтому он будет перебрасыват динамический тип обьекта
-        ОДНАКО срезка произошла не на моменте когда здесь написано throw а на моменте когда исключение 
-        поставила в соответствие подходящий БАЗОВЫЙ класс BaseException 
+        ОДНАКО срезка произошла не на моменте когда здесь написано throw а на моменте когда исключение
+        поставила в соответствие подходящий БАЗОВЫЙ класс BaseException
         а уже потом мы перебрасываем динамический УЖЕ СРЕЗАНЫЙ тип обьекта (явахуе)
         */
     }
-    catch(const DerivedException & ex)
+    catch (const DerivedException &ex)
     {
         std::cout << " -> fail in main: " << ex.what() << " " << ex.getErrorCode() << '\n';
     }
-    
 
     return 0;
 }

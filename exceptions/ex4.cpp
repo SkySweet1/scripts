@@ -1,30 +1,31 @@
 #include <iostream>
 #include <stdexcept>
 
-int main(void){
+int main(void)
+{
     try
     {
         throw std::out_of_range("err");
     }
-    catch(const std::exception & ex)
+    catch (const std::exception &ex)
     {
         std::cerr << "1 " << ex.what() << std::endl;
     }
-    catch(const std::out_of_range & ex)
+    catch (const std::out_of_range &ex)
     {
         std::cerr << "2 " << ex.what() << std::endl;
     }
-    
+
     /*
         вообщем - если мы поставим catch(const std::exception & ex) первым
-        то именно этот блок catch поймает это исключение т к 
+        то именно этот блок catch поймает это исключение т к
         базовый класс принимает все обьекты младших классов (незнаю как сказать классы которые унаследовали класс exeption (производные))
         и для этого исключения catch(const std::exception & ex) и catch(const std::out_of_range & ex) весят одинаково (оба обработчика совместимы по типу)
         и по этому что первое поймаяет это исключение (сверху вниз) то и будет
 
         теперь посмотрю в курсовую
 
-        catch принимающий сылку на базовый класс может обработать и производный тип 
+        catch принимающий сылку на базовый класс может обработать и производный тип
         обработчики внитри одного try проверяються по порядку обьявления поэтому конкретный тип следует размещать раньше базового
 
 
@@ -37,11 +38,11 @@ int main(void){
             |                 ^
         1 warning generated.
         1 err
-        ➜  exeptions 
+        ➜  exeptions
 
-        Компилятор clang++ (который ты используешь на Mac) — очень умный. 
-        Он сам провел статический анализ кода и выдал предупреждение 
-        (warning: exception of type 'const std::out_of_range &' will be caught by earlier handler), 
+        Компилятор clang++ (который ты используешь на Mac) — очень умный.
+        Он сам провел статический анализ кода и выдал предупреждение
+        (warning: exception of type 'const std::out_of_range &' will be caught by earlier handler),
         что второй catch — это мертвый код (unreachable code), потому что первый обработчик всё перехватит
     */
 

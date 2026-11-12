@@ -11,9 +11,9 @@
 Используй vec.reserve(1); чтобы выделить память на 1 элемент.
 Добавь первый элемент vec.push_back(HeavyObject());.
 Добавь второй элемент vec.push_back(HeavyObject()); (тут вектору придется перевыделять память).
-Вопрос: При добавлении второго элемента (когда вектору нужно расширяться), что выведет программа: 
+Вопрос: При добавлении второго элемента (когда вектору нужно расширяться), что выведет программа:
 "Копирование" или "Перемещение"? И почему вектор принял такое решение?
-(Подсказка: если move-конструктор не помечен noexcept, 
+(Подсказка: если move-конструктор не помечен noexcept,
 std::vector не может дать строгую гарантию безопасности при перемещении, поэтому использует более безопасное копирование).
 */
 #include <iostream>
@@ -21,30 +21,35 @@ std::vector не может дать строгую гарантию безоп�
 
 class HeavyObject
 {
-// private:
-//     int data[100];
+    // private:
+    //     int data[100];
 
 public:
-    HeavyObject() {
+    HeavyObject()
+    {
         std::cout << "simple constr" << '\n';
     }
 
-    HeavyObject(const HeavyObject & other) {
+    HeavyObject(const HeavyObject &other)
+    {
         std::cout << "copy constr" << '\n';
     }
 
-    HeavyObject(HeavyObject&& other) {
+    HeavyObject(HeavyObject &&other)
+    {
         std::cout << "move constr" << '\n';
     }
 
-    ~HeavyObject() {
+    ~HeavyObject()
+    {
         std::cout << "destr" << '\n';
     }
 };
 
-int main(void){
+int main(void)
+{
     std::vector<HeavyObject> vector_X;
-    
+
     vector_X.reserve(1);
 
     vector_X.push_back(HeavyObject());
@@ -58,7 +63,7 @@ int main(void){
     destr
     destr
 
-    сначала умирает временный объект (из скобок), 
+    сначала умирает временный объект (из скобок),
     а в самом конце программы — элемент внутри вектора.
 
     ➜  exceptions git:(main) ✗ g++ ex19.cpp && ./a.out

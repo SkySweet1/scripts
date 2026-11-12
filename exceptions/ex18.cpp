@@ -10,7 +10,7 @@
 Напиши конструктор Car(), который инициализирует оба поля в списке инициализации (через make_unique).
 Важно: в теле конструктора Car (внутри фигурных скобок) выброси исключение std::runtime_error("Авария на заводе").
 В main оберни создание Car в try-catch.
-Вопрос: В каком порядке будут выводиться сообщения в консоль? 
+Вопрос: В каком порядке будут выводиться сообщения в консоль?
 (Сначала создание, потом уничтожение). Уничтожатся ли оба умных указателя, если тело конструктора Car упало с ошибкой?
 */
 #include <iostream>
@@ -20,27 +20,29 @@
 class Engine
 {
 public:
-    Engine(){
+    Engine()
+    {
         std::cout << "engine created" << '\n';
     }
 
-    ~Engine(){
+    ~Engine()
+    {
         std::cout << "engine desructed" << '\n';
     }
-
 };
 
 class Wheels
 {
 public:
-    Wheels(){
+    Wheels()
+    {
         std::cout << "wheels created" << '\n';
     }
 
-    ~Wheels(){
+    ~Wheels()
+    {
         std::cout << "wheels destrected" << '\n';
     }
-
 };
 
 class Car
@@ -50,23 +52,26 @@ private:
     std::unique_ptr<Wheels> wheels;
 
 public:
-    Car() : engine(std::make_unique<Engine>()), wheels(std::make_unique<Wheels>()) { 
+    Car() : engine(std::make_unique<Engine>()), wheels(std::make_unique<Wheels>())
+    {
         std::cout << "memory allocated" << '\n';
-        
+
         throw std::runtime_error("explosion on factory");
     }
 
-    ~Car(){
+    ~Car()
+    {
         std::cout << "не вызоветься" << '\n';
     }
 };
 
-int main(void){
+int main(void)
+{
     try
     {
         Car myCar;
     }
-    catch(const std::exception& e)
+    catch (const std::exception &e)
     {
         std::cerr << "fail in main: " << e.what() << '\n';
     }
@@ -81,7 +86,7 @@ int main(void){
 
     деструктор класс Car никогда не вызоветься поскольку иключение выброситься в конктрукторе при этом не создав обьект до конца
 
-    раскрутка стека - это разрушение локальных автоматических обьектов между точкой выброса исключения 
+    раскрутка стека - это разрушение локальных автоматических обьектов между точкой выброса исключения
     и найденным обработчиком в обратном порядке их создания
     */
 

@@ -13,26 +13,28 @@
 #include <iostream>
 #include <stdexcept>
 
-int CalculateArea(int width, int height){
-    if(width < 0 || height < 0){
+int CalculateArea(int width, int height)
+{
+    if (width < 0 || height < 0)
+    {
         throw std::invalid_argument("smaller than zero");
-    }    
+    }
     return width * height;
 }
 
-int main(void){
+int main(void)
+{
     int a = 10;
     int b = -10;
 
     try
     {
-        CalculateArea(a,b);
+        CalculateArea(a, b);
     }
-    catch(const std::invalid_argument & ex)
+    catch (const std::invalid_argument &ex)
     {
-        std::cerr << "fail: " <<  ex.what() << '\n';
+        std::cerr << "fail: " << ex.what() << '\n';
     }
-    
 
     return 0;
 }
