@@ -47,8 +47,9 @@ void openfile()
     */
 }
 
-void closeFile(std::ifstream& file) noexcept { 
-    file.close(); 
+void closeFile(std::ifstream &file) noexcept
+{
+    file.close();
 }
 /*
 я вспомнил что можно так писать с noexept вроде как но я не знаю как мне передать именно файл вот этот
