@@ -18,19 +18,19 @@ int main(void)
 
     file.open("text.txt");
 
-    std::string line;
-
     /*  text.txt
-        123
-        123
-        123
+    txt
+    txt
+    txt
     */
+
+    std::string line;
 
     while (std::getline(file, line))
     {
         std::cout << line << '\n';
     }
-    
+
     file.close();
 
     return 0;
