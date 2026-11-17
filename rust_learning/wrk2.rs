@@ -27,26 +27,19 @@ struct Circle {
 }
 
 struct Square {
+    // производный от базового
     whitch_figure: Figure,
     figure_name: String,
 }
 
 // ----------------------------------------- impl -------------------------------------------------
 
-impl Figure {
+impl Figure { // базовый
     fn new(counter_c: i32, figure_color: String) -> Self {
         Self {
             counter_count: counter_c,
             figure_color: figure_color,
         }
-    }
-
-    pub fn get_counter_count(&self) {
-        println!("counter count: {}", self.counter_count);
-    }
-
-    pub fn get_figure_color(&self) {
-        println!("figure color: {}", self.figure_color);
     }
 
     pub fn count_summ(&self, counter_c: i32) -> Result<i32, String> {
@@ -63,42 +56,30 @@ impl Figure {
     }
 }
 
-impl Triangle {
+impl Triangle { // производный от базового
     fn new(name: String, color: String, counter_count: i32) -> Self {
         Self {
             which_figure: Figure::new(counter_count, color),
             figure_name: name,
         }
     }
-
-    pub fn get_figure_name(&self) {
-        println!("figure_name: {}", self.figure_name);
-    }
 }
 
-impl Circle {
+impl Circle { // производный от базового
     fn new(name: String, color: String, counter_count: i32) -> Self {
         Self {
             whitch_figure: Figure::new(counter_count, color),
             figure_name: name,
         }
     }
-
-    pub fn get_figure_name(&self) {
-        println!("figure name: {}", self.figure_name);
-    }
 }
 
-impl Square {
+impl Square { // производный от базового
     fn new(name: String, color: String, counter_count: i32) -> Self {
         Self {
             whitch_figure: Figure::new(counter_count, color),
             figure_name: name,
         }
-    }
-
-    pub fn get_figure_name(&self) {
-        println!("figure name: {}", self.figure_name);
     }
 }
 
@@ -211,5 +192,12 @@ fn main(){
     for shape in shapes {
         println!("фигура: {}; цвет: {}, количество углов: {}", 
         shape.get_figure_name(), shape.get_color(), shape.get_figure_counter_count());
+    
+        let angels = *shape.get_figure_counter_count();
+
+        match shape.calc_summ(angels) {
+            Ok(summ) => println!("success: {}", summ),
+            Err(error) => println!("errror: {}", error),
+        }
     }
 }
