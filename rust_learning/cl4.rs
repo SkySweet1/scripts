@@ -13,7 +13,7 @@ struct Student {
 }
 
 struct Human {
-    status: Student,
+    status: Option<Student>,
     name: String,
     age: i32,
 }
@@ -75,20 +75,58 @@ impl Human {
             name: name_of_person.to_string(),
             age: age_of_person,
 
-            status: Student::new(
+            status: Some(Student::new(
                 number_of_student_group, 
                 full_name_of_student, 
                 number_of_student,
                 name_of_school,
                 number_of_school,
-            )?,
+            )?),
+        })
+    }
+
+    fn new_just_human(name: &str, age: i32) -> Result<Self, String> {
+        if age <= 0 {
+            return Err(String::from("возраст не может быть отрицательным!"));
+        }
+
+        Ok(Self {
+            status: None,
+            name: name.to_string(),
+            age: age,
         })
     }
 }
 
 // ----------------------------------------------- trait ----------------------------------------------
-// ...
-// -------------------------------------------------- drop --------------------------------------------------
+
+trait Admission { // в трейте нужно писать только сигнатуру
+    fn get_admission(&self);
+
+    fn go_to_school(&self);
+}
+
+// ----------------------------------------------- trait ----------------------------------------------
+
+impl Admission for Human {
+    fn get_admission(&self) {
+        println!("{} поступил в школу", self.name);
+    }
+
+    fn go_to_school(&self) {
+        match &self.status {
+            Some(Student) => {
+                println!("{} пошел в школу", self.name);
+            }
+
+            None => {
+                println!("{} не может пойти в школу, он не студент!", self.name);  
+            }
+        }
+    }
+}
+
+// ------------------------------------------------ drop ----------------------------------------------
 
 impl Drop for School {
     fn drop(&mut self) {
