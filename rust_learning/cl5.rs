@@ -1,154 +1,205 @@
-// -------------------------------------------------- struct -------------------------------------------------------
+// ------------------------------------------------------- struct -------------------------------------------------------
 
-struct School {
-    number_of_school: i32,
-    name_of_shcool: String,
+enum Tool_type {
+    Shovel,
+    Pick,
+    Hand,
 }
 
-struct Student {
-    school: School,
-    full_name_of_student: String,
-    number_of_student: i32,
-    number_of_student_group: i32,
-}
+// ------------------------------------------------------- struct -------------------------------------------------------
 
-struct Human {
-    status: Option<Student>,
+struct Block {
     name: String,
-    age: i32,
+    time_to_destruct: std::time::Duration,
+    interact: bool,
 }
 
-// -------------------------------------------------- impl --------------------------------------------------
-
-impl School {
-    fn new(number: i32, name: &str) -> Result<Self, String> {
-        if number <= 0 {
-            return Err(String::from("номер школы не может быть отрицательным или быть равным нулю!"));
-        }
-
-        Ok(Self {
-            number_of_school: number,
-            name_of_shcool: name.to_string(),
-        })
-    }
+struct Sand {
+    base: Block,
+    interact_methods: Option<Shovel>,
 }
 
-impl Student {
+struct Stone {
+    base: Block,
+    interact_methods: Option<Pick>,
+}
+
+// ---------------
+
+struct Tools {
+    index: i32,
+    name: String,
+    tool_type: Tool_type,
+
+}
+
+struct Shovel {
+    base: Tools,
+}
+
+struct Pick {
+    base: Tools,
+}
+
+// -------------------------------------------------------- impl -----------------------------------------------------------
+
+impl Block {
     fn new(
-        number_of_student_group: i32,
-        full_name_of_student: &str,
-        number_of_student: i32,
-        name_of_school: &str,
-        number_of_school: i32
-
-    ) -> Result<Self, String> {
-        if number_of_student_group <= 0 || number_of_student <= 0 || number_of_school <= 0 {
-            return Err(String::from("числа не должны быть меньше или равны нулю"));
-        }
-
-        Ok(Self {
-            number_of_student_group: number_of_student_group,
-            full_name_of_student: full_name_of_student.to_string(),
-            number_of_student: number_of_student,
-
-            school: School::new(number_of_school, name_of_school)?,
-        })
-    }
-}
-
-impl Human {
-    fn new(
-        number_of_student_group: i32,
-        full_name_of_student: &str,
-        number_of_student: i32,
-        name_of_school: &str,
-        number_of_school: i32,
-        name_of_person: &str,
-        age_of_person: i32,
-
-    ) -> Result<Self, String> {
-        if age_of_person <= 0 {
-            return Err(String::from("возраст не может быть отрицательным!"));
-        }
-
-        Ok(Self {
-            name: name_of_person.to_string(),
-            age: age_of_person,
-
-            status: Some(Student::new(
-                number_of_student_group, 
-                full_name_of_student, 
-                number_of_student,
-                name_of_school,
-                number_of_school,
-            )?),
-        })
-    }
-
-    fn new_just_human(name: &str, age: i32) -> Result<Self, String> {
-        if age <= 0 {
-            return Err(String::from("возраст не может быть отрицательным!"));
-        }
-
-        Ok(Self {
-            status: None,
+        name: &str,
+        duration_for_destruct: std::time::Duration,
+        interact: bool,
+    ) -> Self {
+        Self {
             name: name.to_string(),
-            age: age,
-        })
-    }
-}
-
-// ----------------------------------------------- trait ----------------------------------------------
-
-trait Admission { // в трейте нужно писать только сигнатуру
-    fn get_admission(&self);
-
-    fn go_to_school(&self);
-}
-
-// ----------------------------------------------- trait ----------------------------------------------
-
-impl Admission for Human {
-    fn get_admission(&self) {
-        println!("{} поступил в школу", self.name);
-    }
-
-    fn go_to_school(&self) {
-        match &self.status {
-            Some(Student) => {
-                println!("{} пошел в школу", self.name);
-            }
-
-            None => {
-                println!("{} не может пойти в школу, он не студент!", self.name);  
-            }
+            time_to_destruct: duration_for_destruct,
+            interact: interact,
         }
     }
 }
 
-// ------------------------------------------------ drop ----------------------------------------------
+impl Sand {
+    fn new_with_tool() -> Self {
+        Self {
+            interact_methods: Some(Shovel::new()),
 
-impl Drop for School {
-    fn drop(&mut self) {
-        println!("школа {} разрушена", self.name_of_shcool);
+            base: Block::new(
+                "Sand",
+                std::time::Duration::from_secs(1),
+                true,
+            ),
+        }
+    }
+
+    fn new_without_tool() -> Self {
+        Self {
+            interact_methods: None,
+
+            base: Block::new(
+                "Sand",
+                std::time::Duration::from_secs(1),
+                true,
+            ),
+        }
+    }
+
+    fn can_be_mined(&self, player_tool: &Tools) -> bool {
+        match player_tool.tool_type {
+            Tool_type::Hand => true,
+            Tool_type::Pick => false,
+            Tool_type::Shovel => true,
+        }
+    }
+    
+}
+
+impl Stone {
+    fn new_with_tool() -> Self {
+        Self {
+            interact_methods: Some(Pick::new()),
+
+            base: Block::new(
+                "Stone",
+                std::time::Duration::from_secs(4),
+                true,
+            )
+        }
+    }
+
+    fn new_without_tool() -> Self {
+        Self {
+            interact_methods: None,
+
+            base: Block::new(
+                "Stone",
+                std::time::Duration::from_secs(4),
+                true,
+            )
+        }
+    }
+
+    fn can_be_mined(&self, player_tool: &Tools) -> bool {
+        match player_tool.tool_type {
+            Tool_type::Hand => false,
+            Tool_type::Pick => true,
+            Tool_type::Shovel => false,
+        }
     }
 }
 
-impl Drop for Student {
-    fn drop(&mut self) {
-        println!("ученик {}, номер {}, школы {}, {} отчислился", 
-            self.full_name_of_student, 
-            self.number_of_student, 
-            self.school.number_of_school, 
-            self.school.name_of_shcool
-        );
+// ---------------
+
+impl Tools {
+    fn new(index: i32, name: &str, tool_type: Tool_type) -> Self {
+        Self {
+            index: index,
+            name: name.to_string(),
+            tool_type: tool_type,
+        }
     }
 }
 
-impl Drop for Human {
-    fn drop(&mut self) {
-        println!("человек {} ушел домой", self.name);
+impl Shovel {
+    fn new() -> Self {
+        Self {
+            base: Tools::new(
+                1,
+                "Shovel",
+                Tool_type::Shovel,
+            )
+        }
     }
 }
+
+impl Pick {
+    fn new() -> Self {
+        Self {
+            base: Tools::new(
+                2,
+                "Pick",
+                Tool_type::Pick,
+            )
+        }
+    }
+}
+
+// -------------------------------------------------------- Drop -----------------------------------------------------------
+
+impl Drop for Block {
+    fn drop(&mut self) {
+        println!("dectructor for {}", self.name);
+    }
+}
+
+impl Drop for Stone {
+    fn drop(&mut self) {
+        println!("destructor for {}", self.base.name);
+    }
+}
+
+impl Drop for Sand {
+    fn drop(&mut self) {
+        println!("destructor for {}", self.base.name);
+    }
+}
+
+impl Drop for Tools {
+    fn drop(&mut self) {
+        println!("destructor for {}, index: {}", self.name, self.index);
+    }
+}
+
+impl Drop for Shovel {
+    fn drop(&mut self) {
+        println!("destructor for {}, index: {}", self.base.name, self.base.index);
+    }
+}
+
+impl Drop for Pick {
+    fn drop(&mut self) {
+        println!("destructor for {}, index: {}", self.base.name, self.base.index);
+    }
+}
+
+// -------------------------------------------------------- main --------------------------------------------------
 
 fn main() {}
