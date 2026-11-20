@@ -19,16 +19,49 @@ struct Hacker {
 // ------------------------------------- impl ----------------------------------------
 
 impl std::fmt::Display for HackError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, form: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    /*  
+
+    fmt - сокращение от format (буфер записи)
+
+    std::fmt::Formater - Специальная структура которая умеет собирать строки - работает как буфер
+
+    <'_> - время жизни обьекта - компилятор требует гарантию что этот Formater будет жить в памяти ровно столько 
+    сколько нужно для форматирования - символы '_ означают "анонимное время жизни"
+    
+    Formatter - это временный обьект который одалживает реальный поток вывода
+
+
+    std::fmt::Result - возвращаемый тип - вроде как работает как Result<(), std::fmt::Error> -
+    метод либо вернет пустоту либо ошибку форматирования
+
+    */
+
+
         match self {
-            HackError::Server_not_found(name) => write!(f, "Server {} not found", name),
+            HackError::Server_not_found(name) => write!(form, "Server {} not found", name),
 
             HackError::Low_skill { required, current } => {
-                write!(f, "You dont have enough skill! you have: {}, requirement: {}", required, current)
+                write!(form, "You dont have enough skill! you have: {}, requirement: {}", required, current)
             }
 
-            HackError::Ice_detected => write!(f, "Warning: ICE detected! power off"),
+            HackError::Ice_detected => write!(form, "Warning: ICE detected! power off"),
         }
+        /*
+        match self - смотри на саму ошибку и сопоставляем варианты enum
+
+        write! - важный макрос - println! печатает текст в консоль а write! печатает текст в первый аргумент form
+
+            если бы мы написали println! текст улетел бы сразу в консоль минуя буфер form
+
+            если бы мы написали format!, Rust бы выделел память в куче и создал бы временну строку String, скопировал 
+            бы туда текст а потом fmt скопировал бы этот текстиз временной строки в буфер form - это медленно и создает мусор для сборщика мусора
+
+
+            write!(form, ...) пишет текст напрямую в буфер form минуя создание промежуточных строк
+
+            это называется Zero-Allocation formatting. Rust делает это чтобы печать тысяч ошибок в лог-файл не вызвала тормозов изза постоянных аллокаций памяти
+        */
     }
 }
 
